@@ -8,7 +8,7 @@ v0.1
 ## Status
 
 - [x] Project initialized
-- [ ] ROI extraction
+- [x] ROI extraction
 - [ ] Sirius Red quantification
 - [ ] Batch processing
 
