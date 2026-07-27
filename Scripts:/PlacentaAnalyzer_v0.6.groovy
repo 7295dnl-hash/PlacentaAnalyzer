@@ -31,6 +31,8 @@ import ij.plugin.frame.RoiManager
 import ij.process.ByteProcessor
 import ij.process.ImageProcessor
 
+import ij.process.ImageStatistics
+
 //----------------------------------------------------
 // CLASS IDS
 //----------------------------------------------------
@@ -69,7 +71,15 @@ sirius.show()
     println("Sirius: " +
             sirius.getWidth() + " x " +
             sirius.getHeight())         
+// Verify that both images have identical dimensions
 
+if (classified.getWidth() != sirius.getWidth() ||
+    classified.getHeight() != sirius.getHeight()) {
+
+    IJ.error("Images do not have matching dimensions!")
+
+    return
+}
     println("Image loaded successfully.")
 
     ImageProcessor ip = classified.getProcessor()
@@ -87,6 +97,9 @@ println("Pixel (500,300) = " + pixelValue)
 Roi labyrinthROI = processCompartment(classified, 1)
 addROIToManager(labyrinthROI)
 applyROI(sirius, labyrinthROI)
+double labyrinthArea = measureArea(sirius, labyrinthROI)
+
+println("Labyrinth Area = " + labyrinthArea + " pixels²")
 
 println("ROI created: " + (labyrinthROI != null))
 println("Pixel (0,0) = " + ip.getPixel(0,0))
@@ -177,5 +190,18 @@ Roi processCompartment(ImagePlus classified, int classID){
     Roi roi = createROI(mask)
 
     return roi
+
+}
+//----------------------------------------------------
+// MEASURE AREA
+//----------------------------------------------------
+
+double measureArea(ImagePlus image, Roi roi){
+
+    image.setRoi(roi)
+
+    ImageStatistics stats = image.getStatistics()
+
+    return stats.area
 
 }
